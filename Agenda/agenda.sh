@@ -1,33 +1,66 @@
 #!/bin/bash
 
+desformatear() {
+  LINE=$1
+
+  NAME=`echo $LINE | cut -d ":" -f 1`
+  TLF=`echo $LINE | cut -d ":" -f 2` 
+  EMAIL=`echo $LINE | cut -d ":" -f 3`
+
+  echo "Nombre: " $NAME
+  echo "Teléfono: " $TLF
+  echo "Correo: " $EMAIL
+  echo
+}
+
+printFormatFIle() {
+  FILE=$1
+
+  while read L; do
+    desformatear $L
+  done < "$FILE"
+}
+
+
 select opt in "listar" "buscar" "borrar" "añadir" "salir"
 do
     case $opt in
 
         "listar")
-            ls -l
-            # Crearía una función "Desformatear" y pasaría todas las líneas por ella
-            ;;
+          printFormatFIle ./databse.txt
+          ;;
 
         "buscar")
-            # grep
-            date
+            echo
+            echo "Buscar: "
+            INPUT=""
+            read $INPUT
+
+            cat ./databse.txt | grep "$INPUT" > ./aux.txt
+            printFormatFIle ./aux.txt
             ;;
 
         "borrar")
-            # grep "nombre" borrarla
-            echo "Exiting..."
-            break
+            echo "Borrar: "
+            read PATTERN
+            sed -i "/${PATTERN}/d" ./databse.txt
             ;;
 
         "añadir")
-            # Crear funcion formatear y escribir una linea nueva
-            echo "Exiting..."
-            break
+            echo "Nombre: "
+            read NAME
+
+            echo "Telefono: "
+            read TLF
+
+            echo "Mail: "
+            read ML
+
+            echo "${NAME}:${TLF}:${ML}" >> ./databse.txt
             ;;
 
-        "salir")
-            return
+          "salir")
+            break
             ;;
 
         *)
